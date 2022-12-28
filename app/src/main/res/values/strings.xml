@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ContactsApp</string>
+    <string name="home_screen_title">Home</string>
 </resources>

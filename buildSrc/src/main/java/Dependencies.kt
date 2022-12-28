@@ -14,6 +14,7 @@ object Versions {
     const val activityCompose = "1.6.1"
     const val timber = "5.0.1"
     const val hiltNavigationCompose = "1.0.0"
+    const val accompanistVersion = "0.28.0"
 }
 
 /**
@@ -40,6 +41,8 @@ object Dependencies {
     const val hiltCompiler = "com.google.dagger:hilt-compiler:${Versions.hilt}"
     const val androidxHiltNavCompose =
         "androidx.hilt:hilt-navigation-compose:${Versions.hiltNavigationCompose}"
+    const val accompanistPermission =
+        "com.google.accompanist:accompanist-permissions:${Versions.accompanistVersion}"
 
     const val junit = "junit:junit:4.13.2"
     const val junitExt = "androidx.test.ext:junit:1.1.3"

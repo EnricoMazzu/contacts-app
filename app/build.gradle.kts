@@ -73,6 +73,8 @@ dependencies {
     implementation(Dependencies.hiltAndroid)
     kapt(Dependencies.hiltCompiler)
     implementation(Dependencies.androidxHiltNavCompose)
+    //Google libs that simplify the permissions management
+    implementation(Dependencies.accompanistPermission)
     //Test & dev support
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.junitExt)
