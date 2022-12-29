@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.mzzlab.sample.contactsapp.ui.screen.details.addContactDetailsScreen
 import com.mzzlab.sample.contactsapp.ui.screen.home.addHomeRoute
 
 @Composable
@@ -18,5 +19,6 @@ fun AppNavHost(
         startDestination = startDestination,
     ){
         addHomeRoute(navController)
+        addContactDetailsScreen(navController)
     }
 }

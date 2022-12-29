@@ -28,6 +28,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.mzzlab.sample.contactsapp.R
+import com.mzzlab.sample.contactsapp.data.model.Contact
+import com.mzzlab.sample.contactsapp.ui.navigation.ContactDetailsRoute
 import com.mzzlab.sample.contactsapp.ui.navigation.HomeRoute
 import com.mzzlab.sample.contactsapp.ui.widget.PermissionBox
 import timber.log.Timber
@@ -39,7 +41,8 @@ import timber.log.Timber
 )
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onContactSelected: (Contact) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     Timber.d("new State: $state")
@@ -63,7 +66,8 @@ fun HomeScreen(
         }
         HomeContent(
             state = state,
-            pullRefreshState = pullRefreshState
+            pullRefreshState = pullRefreshState,
+            onContactSelected = onContactSelected
         )
     }
 
@@ -75,6 +79,7 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     state: HomeUiState,
     pullRefreshState: PullRefreshState,
+    onContactSelected: (Contact) -> Unit = {}
 ) {
     Box(modifier = modifier
         .fillMaxSize()
@@ -87,18 +92,21 @@ fun HomeContent(
         }
         ContactsList(
             modifier = Modifier.fillMaxSize(),
-            contacts = state.contacts
+            contacts = state.contacts,
+            onSelected = onContactSelected
         )
         PullRefreshIndicator(state.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
 }
-
 
 fun NavGraphBuilder.addHomeRoute(
     navController: NavHostController
 ) {
     composable(route = HomeRoute.route) {
         val viewModel: HomeViewModel = hiltViewModel()
-        HomeScreen(viewModel)
+        HomeScreen(viewModel){
+            Timber.d("Navigate to $it")
+            navController.navigate(ContactDetailsRoute.createRoute(it.id))
+        }
     }
 }

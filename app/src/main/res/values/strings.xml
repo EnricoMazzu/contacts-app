@@ -4,4 +4,5 @@
     <string name="contact_permission_rationale">This app require the permission to access to your contacts</string>
     <string name="contact_permission_desc">To use this app, please grant the Contacts permission</string>
     <string name="button_request_permission">Request permission</string>
+    <string name="details_screen_title">Details</string>
 </resources>
