@@ -27,9 +27,11 @@ class ContactsProviderImpl(
             null
         )
         val result: List<Contact>? = cursor.map {
-            val nameIndex = it.getColumnIndexOrThrow(ContactsContract.Profile.DISPLAY_NAME_PRIMARY)
-            val hasNumber = it.getColumnIndexOrThrow(ContactsContract.Profile.HAS_PHONE_NUMBER)
+            val idIndex = it.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
+            val nameIndex = it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+            val hasNumber = it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER)
             Contact(
+                id = it.getString(idIndex).orEmpty(),
                 name = it.getString(nameIndex),
                 hasPhoneNumber = it.getInt(hasNumber) == 1
             )
