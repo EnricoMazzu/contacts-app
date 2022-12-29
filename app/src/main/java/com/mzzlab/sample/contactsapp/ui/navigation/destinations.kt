@@ -36,5 +36,5 @@ object AppRoutes {
     }
 
     @JvmStatic
-    private var topLevelRoutes: List<AppDestination>  = listOf(HomeRoute)
+    private var topLevelRoutes: List<AppDestination>  = listOf(HomeRoute, ContactDetailsRoute)
 }
