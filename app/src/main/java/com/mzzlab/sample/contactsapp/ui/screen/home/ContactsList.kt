@@ -2,7 +2,6 @@ package com.mzzlab.sample.contactsapp.ui.screen.home
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,21 +28,21 @@ fun ContactsList(
     contacts: Contacts = Collections.emptyList(),
     onSelected: (Contact) -> Unit = {}
 ){
-
-    val mapped = remember(contacts) {
-        contacts.groupBy { it.name.first().toString() }
-    }
-
+    val mapped = remember(contacts) { contacts.groupBy { it.name.first().toString() } }
     LazyColumn(modifier) {
         mapped.map { entry ->
             stickyHeader {
-                Text(
-                    text = entry.key,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.h6
-                )
+                Column(Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 5.dp, bottom = 5.dp)))
+                {
+                    Text(
+                        text = entry.key,
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.primary
+                    )
+                }
             }
             items(
                 items = entry.value,
@@ -52,12 +51,52 @@ fun ContactsList(
                 ContactListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onSelected(contact) },
+                        .clickable { onSelected(contact) }
+                        .padding(PaddingValues(start = 40.dp, top = 5.dp, end = 5.dp, bottom = 5.dp)),
                     contact = contact,
                     initial = entry.key
                 )
             }
         }
+    }
+}
+
+@Composable
+fun ContactListItem(
+    modifier: Modifier = Modifier,
+    contact: Contact,
+    initial: String,
+    color: Color = Color.Red,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ContactInitial(
+            color = color,
+            initial = initial
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = contact.name
+        )
+    }
+
+}
+
+@Composable
+private fun ContactInitial(
+    modifier: Modifier = Modifier,
+    color: Color,
+    initial: String,
+    textStyle: TextStyle = MaterialTheme.typography.subtitle1,
+) {
+    Box(modifier.size(40.dp), contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawCircle(SolidColor(color))
+        }
+        Text(text = initial, style = textStyle, color = Color.White)
     }
 }
 
@@ -79,45 +118,5 @@ fun ContactListItemPreview(){
     )
 }
 
-
-@Composable
-fun ContactListItem(
-    modifier: Modifier = Modifier,
-    contact: Contact,
-    initial: String,
-    color: Color = Color.Red,
-) {
-    Row(
-        modifier = modifier
-            .padding(5.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ItemAvatar(
-            color = color,
-            initial = initial
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = contact.name
-        )
-    }
-
-}
-
-@Composable
-private fun ItemAvatar(
-    modifier: Modifier = Modifier,
-    color: Color,
-    initial: String,
-    textStyle: TextStyle = MaterialTheme.typography.subtitle1,
-) {
-    Box(modifier.size(40.dp), contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(SolidColor(color))
-        }
-        Text(text = initial, style = textStyle, color = Color.White)
-    }
-}
 
 

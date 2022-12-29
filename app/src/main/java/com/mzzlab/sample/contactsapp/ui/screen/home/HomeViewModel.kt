@@ -2,8 +2,10 @@ package com.mzzlab.sample.contactsapp.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mzzlab.sample.contactsapp.common.Result
 import com.mzzlab.sample.contactsapp.common.switch
 import com.mzzlab.sample.contactsapp.data.ContactsRepository
+import com.mzzlab.sample.contactsapp.data.model.Contact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,14 +27,38 @@ class HomeViewModel @Inject constructor(
             contactsRepository
                 .contacts
                 .collect { result ->
-                    Timber.d("Result: $result")
-                    result.switch(
-                        loading = { _uiState.update { it.copy(loading = true) } },
-                        success = { data ->  _uiState.update { it.copy(loading = false, contacts = data.orEmpty()) }},
-                        error = { err -> Timber.e(err, "Error on getContacts")}
+                    processResult(result)
+                }
+        }
+    }
+
+    private fun processResult(result: Result<List<Contact>>) {
+        Timber.d("Result: $result")
+        result.switch(
+            loading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            success = { data ->
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        refreshing = false,
+                        contacts = data.orEmpty()
                     )
                 }
+            },
+            error = { err ->
+                Timber.e(err, "Error on getContacts")
+                _uiState.update { it.copy(loading = false, refreshing = false) }
+            }
+        )
+    }
 
+    fun refreshContacts(pullToRefresh: Boolean = false) {
+        Timber.d("refreshContacts")
+        viewModelScope.launch {
+            _uiState.update { it.copy(refreshing = pullToRefresh) }
+            contactsRepository.reloadContacts()
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.mzzlab.sample.contactsapp.ui.widget
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,51 +17,36 @@ import com.google.accompanist.permissions.*
 import com.mzzlab.sample.contactsapp.R
 
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun PermissionAwareContainer(
-    modifier: Modifier = Modifier,
-    permission: String,
-    @StringRes rationaleMsg: Int,
-    @StringRes permissionDesc: Int,
-    content:@Composable () -> Unit
-){
-    val cameraPermissionState = rememberPermissionState(permission)
-    if (cameraPermissionState.status.isGranted) {
-        content()
-    } else {
-        PermissionBox(
-            modifier = modifier,
-            cameraPermissionState = cameraPermissionState,
-            rationaleMsg = rationaleMsg,
-            permissionDesc = permissionDesc)
-    }
-}
-
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-private fun PermissionBox(
+fun PermissionBox(
     modifier: Modifier = Modifier,
-    cameraPermissionState: PermissionState,
-    rationaleMsg: Int,
+    permissionState: PermissionState,
+    rationaleMessage: Int,
     permissionDesc: Int
 ) {
-    val textToShow = if (cameraPermissionState.status.shouldShowRationale) {
-        rationaleMsg
+    val textToShow = if (permissionState.status.shouldShowRationale) {
+        rationaleMessage
     } else {
         permissionDesc
     }
-    Column(
+    Card(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        elevation = 10.dp
     ) {
+        Column(
+            modifier = modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
-        Text(stringResource(id = textToShow))
-        Button(onClick = {
-            cameraPermissionState.launchPermissionRequest()
-        }) {
-            Text("Request permission")
+            Text(stringResource(id = textToShow))
+            Button(
+                modifier = Modifier.padding(PaddingValues(top = 10.dp)),
+                onClick = { permissionState.launchPermissionRequest() }
+            ) {
+                Text(stringResource(id = R.string.button_request_permission))
+            }
         }
     }
 }
@@ -72,8 +57,8 @@ private fun PermissionBox(
 private fun PermissionBoxPreview(){
     PermissionBox(
         modifier = Modifier,
-        cameraPermissionState = DeniedMockPermissionState(true),
-        rationaleMsg = R.string.contact_permission_rationale,
+        permissionState = DeniedMockPermissionState(true),
+        rationaleMessage = R.string.contact_permission_rationale,
         permissionDesc = R.string.contact_permission_desc
     )
 }
