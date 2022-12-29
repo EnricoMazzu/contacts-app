@@ -71,13 +71,13 @@ private fun PermissionBox(
 @Composable
 private fun PermissionBoxPreview(){
     PermissionBox(
-        modifier = Modifier.width(300.dp),
+        modifier = Modifier,
         cameraPermissionState = DeniedMockPermissionState(true),
         rationaleMsg = R.string.contact_permission_rationale,
         permissionDesc = R.string.contact_permission_desc
     )
-
 }
+
 
 
 @OptIn(ExperimentalPermissionsApi::class)

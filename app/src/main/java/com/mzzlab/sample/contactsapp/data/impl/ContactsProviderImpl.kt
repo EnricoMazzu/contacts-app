@@ -24,7 +24,7 @@ class ContactsProviderImpl(
             DEFAULT_PROJECTION,
             selection,
             selectionArgs,
-            null
+            DEFAULT_SORT
         )
         val result: List<Contact>? = cursor.map {
             val idIndex = it.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
@@ -49,6 +49,7 @@ class ContactsProviderImpl(
             ContactsContract.Contacts.LOOKUP_KEY,
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
         )
+        private const val DEFAULT_SORT = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
     }
 
     override suspend fun getContacts(): Contacts = withContext(dispatcher){
