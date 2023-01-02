@@ -56,9 +56,7 @@ class ContactDetailsViewModel @Inject constructor(
     }
 
     private fun processDetails(details: List<ContactDetails>?) {
-        val name: String = (details?.find {
-            it.dataType == ContactDetails.DetailsType.Name
-        } as? ContactDetails.Name)?.displayName.orEmpty()
+        val name: String = reduceName(details)
 
         val items: List<DetailsUiState.Item> =
             details?.filter {
@@ -82,9 +80,16 @@ class ContactDetailsViewModel @Inject constructor(
                 name = name,
                 values = items,
                 initial = name.firstOrNull()?.toString().orEmpty()
-
             )
         }
 
+    }
+
+    private fun reduceName(details: List<ContactDetails>?): String {
+        val nameItem = details?.find { it.dataType == ContactDetails.DetailsType.Name }
+        if(nameItem != null){
+            return nameItem.displayName.orEmpty()
+        }
+        return details?.find { !it.displayName.isNullOrEmpty() } ?.displayName.orEmpty()
     }
 }
