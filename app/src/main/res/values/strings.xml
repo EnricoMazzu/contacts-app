@@ -5,4 +5,7 @@
     <string name="contact_permission_desc">To use this app, please grant the Contacts permission</string>
     <string name="button_request_permission">Request permission</string>
     <string name="details_screen_title">Details</string>
+    <string name="phone_number_caption">Phone Number</string>
+    <string name="email_caption">Email</string>
+    <string name="website_caption">Website</string>
 </resources>

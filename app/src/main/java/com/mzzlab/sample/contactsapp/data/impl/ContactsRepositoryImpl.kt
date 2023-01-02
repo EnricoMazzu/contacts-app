@@ -25,7 +25,6 @@ class ContactsRepositoryImpl (
 
     override suspend fun reloadContacts() {
         _contactsFlow.value = Result.Loading()
-        delay(3000)
         val result = getResult {
             contactsProvider.getContacts()
         }

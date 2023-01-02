@@ -3,7 +3,7 @@ package com.mzzlab.sample.contactsapp.data.model
 sealed class ContactDetails(
     val id: String,
     val contactId: String,
-    val type: DetailsType,
+    val dataType: DetailsType,
     val displayName: String? = null
 ) {
     enum class DetailsType {
@@ -14,13 +14,11 @@ sealed class ContactDetails(
         Other
     }
 
-
-
     class Name(
         id: String,
         contactId: String,
         displayName: String? = null,
-    ):ContactDetails(id, contactId, DetailsType.Name, displayName){
+    ): ContactDetails(id, contactId, DetailsType.Name, displayName){
         override fun toString(): String {
             return "Name() ${super.toString()}"
         }
@@ -71,7 +69,7 @@ sealed class ContactDetails(
     ): ContactDetails(id, contactId, DetailsType.Other, displayName)
 
     override fun toString(): String {
-        return "ContactDetails(id='$id', contactId='$contactId', type=$type, displayName=$displayName)"
+        return "ContactDetails(id='$id', contactId='$contactId', type=$dataType, displayName=$displayName)"
     }
 }
 

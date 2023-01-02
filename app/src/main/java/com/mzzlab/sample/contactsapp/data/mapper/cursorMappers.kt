@@ -1,14 +1,13 @@
-package com.mzzlab.sample.contactsapp.data.impl
+package com.mzzlab.sample.contactsapp.data.mapper
 
 import android.database.Cursor
 import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.provider.ContactsContract.CommonDataKinds.Phone
-import android.provider.ContactsContract.CommonDataKinds.Photo
-import android.provider.ContactsContract.CommonDataKinds.StructuredName
-import android.provider.ContactsContract.CommonDataKinds.Website
+import android.provider.ContactsContract.CommonDataKinds.*
 import android.provider.ContactsContract.Data
-import android.provider.ContactsContract.Profile
+import com.mzzlab.sample.contactsapp.data.impl.getIntByName
+import com.mzzlab.sample.contactsapp.data.impl.getStringByName
+import com.mzzlab.sample.contactsapp.data.impl.optIntByName
+import com.mzzlab.sample.contactsapp.data.impl.optStringByName
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import timber.log.Timber
@@ -22,12 +21,10 @@ fun Cursor.asContact(): Contact {
 }
 
 fun Cursor.asContactDetails(): ContactDetails {
-    val id = getStringByName(ContactsContract.Data._ID)
-    val displayName = getStringByName(ContactsContract.Data.DISPLAY_NAME_PRIMARY)
-    val contactId = getStringByName(ContactsContract.Data.CONTACT_ID)
-    val mimeType = getStringByName(ContactsContract.Data.MIMETYPE)
-    Timber.d(">>> id:$id mimeType: $mimeType")
-    return when(mimeType){
+    val id = getStringByName(Data._ID)
+    val displayName = getStringByName(Data.DISPLAY_NAME_PRIMARY)
+    val contactId = getStringByName(Data.CONTACT_ID)
+    return when(getStringByName(Data.MIMETYPE)){
         StructuredName.CONTENT_ITEM_TYPE -> ContactDetails.Name(
             id = id,
             contactId = contactId,

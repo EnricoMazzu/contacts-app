@@ -7,6 +7,7 @@ import com.mzzlab.sample.contactsapp.common.switch
 import com.mzzlab.sample.contactsapp.data.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -36,9 +37,7 @@ class HomeViewModel @Inject constructor(
     private fun processResult(result: Result<List<Contact>>) {
         Timber.d("Result: $result")
         result.switch(
-            loading = {
-                _uiState.update { it.copy(loading = true) }
-            },
+            loading = { _uiState.update { it.copy(loading = true) } },
             success = { data ->
                 _uiState.update {
                     it.copy(
@@ -59,6 +58,7 @@ class HomeViewModel @Inject constructor(
         Timber.d("refreshContacts")
         viewModelScope.launch {
             _uiState.update { it.copy(refreshing = pullToRefresh) }
+            delay(200)
             contactsRepository.reloadContacts()
         }
     }

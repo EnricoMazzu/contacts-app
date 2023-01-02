@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.data.model.Contacts
+import com.mzzlab.sample.contactsapp.ui.widget.ContactInitial
 import java.util.Collections
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -85,20 +86,6 @@ fun ContactListItem(
 
 }
 
-@Composable
-private fun ContactInitial(
-    modifier: Modifier = Modifier,
-    color: Color,
-    initial: String,
-    textStyle: TextStyle = MaterialTheme.typography.subtitle1,
-) {
-    Box(modifier.size(40.dp), contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(SolidColor(color))
-        }
-        Text(text = initial, style = textStyle, color = Color.White)
-    }
-}
 
 
 @Composable

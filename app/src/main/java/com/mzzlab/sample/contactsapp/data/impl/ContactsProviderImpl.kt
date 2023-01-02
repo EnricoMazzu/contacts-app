@@ -3,10 +3,9 @@ package com.mzzlab.sample.contactsapp.data.impl
 import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.provider.ContactsContract.CommonDataKinds.Phone
-import android.provider.ContactsContract.RawContacts
 import com.mzzlab.sample.contactsapp.data.ContactsProvider
+import com.mzzlab.sample.contactsapp.data.mapper.asContact
+import com.mzzlab.sample.contactsapp.data.mapper.asContactDetails
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.data.model.Contacts
@@ -43,10 +42,10 @@ class ContactsProviderImpl(
     }
 
     override suspend fun getContactDetails(contactId: String): List<ContactDetails> = withContext(dispatcher) {
-        fetchContactDetails(contactId) ?: Collections.emptyList()
+        fetchContactData(contactId) ?: Collections.emptyList()
     }
 
-    private fun fetchContactDetails(contactId: String): List<ContactDetails>? {
+    private fun fetchContactData(contactId: String): List<ContactDetails>? {
         val cursor: Cursor? = contentResolver.query(
             ContactsContract.Data.CONTENT_URI,
             CONTACT_DATA_PROJECTION,
