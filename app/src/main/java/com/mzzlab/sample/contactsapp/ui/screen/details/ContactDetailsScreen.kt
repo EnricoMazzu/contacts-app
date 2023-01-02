@@ -1,7 +1,5 @@
 package com.mzzlab.sample.contactsapp.ui.screen.details
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,7 +22,6 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.*
 import androidx.navigation.compose.composable
-import com.mzzlab.sample.contactsapp.R
 import com.mzzlab.sample.contactsapp.ui.navigation.ContactDetailsRoute
 import com.mzzlab.sample.contactsapp.ui.navigation.NavigationConstants
 import com.mzzlab.sample.contactsapp.ui.theme.ContactsAppTheme
@@ -53,58 +50,30 @@ fun ContactDetailsContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ContactHeader(
-                name = details.name.orEmpty(),
-                initial = "C")
+                name = details.name,
+                initial = details.initial)
         }
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(15.dp)
                 .weight(0.65f)) {
-            /*Column(Modifier.fillMaxWidth()) {
-                LabelValuePair(
-                    label = stringResource(id = R.string.phone_number_caption),
-                    value = details.phoneNumber.orEmpty()
-                )
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(10.dp),
-                    color = Color.Transparent
-                )
-                LabelValuePair(
-                    label = stringResource(id = R.string.email_caption),
-                    value = details.email.orEmpty()
-                )
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(10.dp),
-                    color = Color.Transparent
-                )
-                LabelValuePair(
-                    label = stringResource(id = R.string.website_caption),
-                    value = details.website.orEmpty()
-                )
-
-            }
-            */
-
             LazyColumn(modifier = Modifier
                 .fillMaxSize()){
                 items(
                     items = details.values,
-                    key = { i -> i.key}
+                    key = { i -> i.key }
                 ){ item ->
+                    Line()
                     LabelValuePair(
                         label = stringResource(id = item.key),
                         value = item.value.orEmpty()
                     )
-                    Divider(
+                    Line()
+                    Spacer(
                         Modifier
                             .fillMaxWidth()
                             .height(10.dp),
-                        color = Color.Transparent
                     )
                 }
             }
@@ -131,11 +100,10 @@ fun ContactHeader(
             circleSize = 100.dp,
             textStyle = MaterialTheme.typography.h2
         )
-        Divider(
+        Spacer(
             Modifier
                 .fillMaxWidth()
-                .height(30.dp),
-            color = Color.Transparent
+                .height(30.dp)
         )
         Text(
             text = name,
@@ -158,6 +126,14 @@ fun LabelValuePair(
         )
         Text(text = value)
     }
+}
+
+@Composable
+fun Line(){
+    Divider(
+        Modifier
+            .fillMaxWidth()
+            .height(1.dp))
 }
 
 
