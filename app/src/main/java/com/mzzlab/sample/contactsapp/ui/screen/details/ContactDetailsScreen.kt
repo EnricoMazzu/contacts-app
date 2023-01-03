@@ -3,7 +3,6 @@ package com.mzzlab.sample.contactsapp.ui.screen.details
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -22,26 +21,30 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.*
 import androidx.navigation.compose.composable
+import com.mzzlab.sample.contactsapp.R
 import com.mzzlab.sample.contactsapp.ui.navigation.ContactDetailsRoute
 import com.mzzlab.sample.contactsapp.ui.navigation.NavigationConstants
 import com.mzzlab.sample.contactsapp.ui.theme.ContactsAppTheme
 import com.mzzlab.sample.contactsapp.ui.widget.ContactInitial
+import com.mzzlab.sample.contactsapp.ui.widget.Line
+import com.mzzlab.sample.contactsapp.ui.widget.rememberContactColor
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun ContactDetailsScreen(viewModel: ContactDetailsViewModel) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.reload()
     }
     val uiState: DetailsUiState by viewModel.uiState.collectAsStateWithLifecycle()
-    ContactDetailsContent(details = uiState)
+    ContactDetailsContent(details = uiState, contactId = viewModel.contactId)
 }
 
 @Composable
 fun ContactDetailsContent(
     modifier: Modifier = Modifier,
+    contactId: String,
     details: DetailsUiState
-){
+) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             Modifier
@@ -49,38 +52,55 @@ fun ContactDetailsContent(
                 .weight(0.35f),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val color = rememberContactColor(contactId = contactId)
             ContactHeader(
                 name = details.name,
-                initial = details.initial)
+                initial = details.initial,
+                initialColor = color
+            )
         }
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
-                .weight(0.65f)) {
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()){
-                items(
-                    items = details.values,
-                    key = { i -> i.key }
-                ){ item ->
-                    Line()
-                    LabelValuePair(
-                        label = stringResource(id = item.key),
-                        value = item.value.orEmpty()
-                    )
-                    Line()
-                    Spacer(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(10.dp),
-                    )
-                }
-            }
+                .weight(0.65f)
+        ) {
+            ContactDetailsList(
+                modifier = Modifier.fillMaxSize(),
+                details = details
+            )
         }
 
     }
+}
 
+@Composable
+private fun ContactDetailsList(
+    modifier: Modifier = Modifier,
+    details: DetailsUiState
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        items(
+            items = details.attributes,
+            key = { i -> i.id }
+        ) { item ->
+            Line()
+            LabelValuePair(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                label = stringResource(id = item.labelRes),
+                value = item.value.orEmpty()
+            )
+            Line()
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(10.dp),
+            )
+        }
+    }
 }
 
 @Composable
@@ -88,6 +108,7 @@ fun ContactHeader(
     modifier: Modifier = Modifier,
     name: String,
     initial: String,
+    initialColor: Color = Color.Red
 ) {
     Column(
         modifier = modifier
@@ -95,16 +116,15 @@ fun ContactHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ContactInitial(
-            color = Color.Red,
+            color = initialColor,
             initial = initial,
             circleSize = 100.dp,
-            textStyle = MaterialTheme.typography.h2
+            textStyle = MaterialTheme.typography.h2,
         )
         Spacer(
             Modifier
                 .fillMaxWidth()
-                .height(30.dp)
-        )
+                .height(30.dp))
         Text(
             text = name,
             style = MaterialTheme.typography.h4,
@@ -118,8 +138,9 @@ fun LabelValuePair(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
-){
-    Column(modifier = modifier.fillMaxWidth()) {
+) {
+    Column(modifier = modifier
+    ) {
         Text(
             text = label,
             style = MaterialTheme.typography.h5
@@ -129,24 +150,37 @@ fun LabelValuePair(
 }
 
 @Composable
-fun Line(){
-    Divider(
-        Modifier
-            .fillMaxWidth()
-            .height(1.dp))
-}
-
-
-@Composable
 @Preview(showBackground = true)
-fun ContactDetailsContentPreview(){
+fun ContactDetailsContentPreview() {
     ContactsAppTheme {
         Surface(Modifier.fillMaxSize()) {
             ContactDetailsContent(
+                contactId = "23",
                 details = DetailsUiState(
                     loading = false,
                     error = null,
+                    initial = "C",
                     name = "Cris field",
+                    attributes = listOf(
+                        ContactAttribute(
+                            id = "1",
+                            type = AttributeType.Phone,
+                            labelRes =R.string.phone_number_caption,
+                            value = "+39 5645324"
+                        ),
+                        ContactAttribute(
+                            id = "2",
+                            type = AttributeType.Email,
+                            labelRes =R.string.email_caption,
+                            value = "+39 5645324"
+                        ),
+                        ContactAttribute(
+                            id = "3",
+                            type = AttributeType.Website,
+                            labelRes =R.string.website_caption,
+                            value = "https://www.google.it"
+                        ),
+                    )
                 )
             )
         }
@@ -157,20 +191,20 @@ fun ContactDetailsContentPreview(){
 
 fun NavGraphBuilder.addContactDetailsScreen(
     navController: NavHostController
-){
+) {
     composable(
         ContactDetailsRoute.route,
         arguments = listOf(
-            navArgument(ContactDetailsRoute.CONTACT_ID_PARAMS){
+            navArgument(ContactDetailsRoute.CONTACT_ID_PARAMS) {
                 nullable = false
                 type = NavType.StringType
             }
         )
-    ){
+    ) {
         val contactId = it.arguments?.getString(ContactDetailsRoute.CONTACT_ID_PARAMS)
             ?: NavigationConstants.NoId
         val viewModel: ContactDetailsViewModel = hiltViewModel()
-        viewModel.setContactId(contactId)
+        viewModel.setTargetContactId(contactId)
         ContactDetailsScreen(viewModel = viewModel)
     }
 }

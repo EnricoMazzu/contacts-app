@@ -44,12 +44,15 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onContactSelected: (Contact) -> Unit = {}
 ) {
+    // Our ui state (that comes from our viewModel)
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     Timber.d("new State: $state")
+    // The permission state holder
+    val permissionState = rememberPermissionState(Manifest.permission.READ_CONTACTS)
+    // The pull to refresh state holder
     val pullRefreshState = rememberPullRefreshState(state.refreshing, {
         viewModel.refreshContacts(true)
     })
-    val permissionState = rememberPermissionState(Manifest.permission.READ_CONTACTS)
 
     if (!permissionState.status.isGranted) {
         PermissionBox(
@@ -58,19 +61,20 @@ fun HomeScreen(
                 .padding(5.dp),
             permissionState = permissionState,
             rationaleMessage = R.string.contact_permission_rationale,
-            permissionDesc = R.string.contact_permission_desc
+            permanentlyDeniedMessage = R.string.contact_permission_perm_denied
         )
     } else {
-        LaunchedEffect(permissionState, permissionState.status){
+        LaunchedEffect(permissionState){
+            // When our permission is granted, we will start the contact fetching
             viewModel.refreshContacts()
         }
+        // The content of our screen
         HomeContent(
             state = state,
             pullRefreshState = pullRefreshState,
             onContactSelected = onContactSelected
         )
     }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -85,17 +89,25 @@ fun HomeContent(
         .fillMaxSize()
         .pullRefresh(pullRefreshState)
     ) {
+        // the loader indicator
         AnimatedVisibility(visible = state.loading && !state.refreshing) {
             LinearProgressIndicator(
                 Modifier.fillMaxWidth()
             )
         }
+        // the contact list
         ContactsList(
             modifier = Modifier.fillMaxSize(),
             contacts = state.contacts,
             onSelected = onContactSelected
         )
-        PullRefreshIndicator(state.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+        // our pull to refresh indicator
+        PullRefreshIndicator(
+            refreshing = state.refreshing,
+            state = pullRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+        )
     }
 }
 

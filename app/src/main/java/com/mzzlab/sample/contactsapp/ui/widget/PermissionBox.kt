@@ -1,5 +1,6 @@
 package com.mzzlab.sample.contactsapp.ui.widget
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -15,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.*
 import com.mzzlab.sample.contactsapp.R
+import com.mzzlab.sample.contactsapp.common.isPermanentlyDenied
 
 
 @Composable
@@ -22,14 +25,9 @@ import com.mzzlab.sample.contactsapp.R
 fun PermissionBox(
     modifier: Modifier = Modifier,
     permissionState: PermissionState,
-    rationaleMessage: Int,
-    permissionDesc: Int
+    @StringRes rationaleMessage: Int,
+    @StringRes permanentlyDeniedMessage: Int
 ) {
-    val textToShow = if (permissionState.status.shouldShowRationale) {
-        rationaleMessage
-    } else {
-        permissionDesc
-    }
     Card(
         modifier = modifier,
         elevation = 10.dp
@@ -39,8 +37,14 @@ fun PermissionBox(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            Text(stringResource(id = textToShow))
+            @StringRes val textToShowRes: Int = remember(permissionState) {
+                if(permissionState.status.isPermanentlyDenied()){
+                    permanentlyDeniedMessage
+                }else{
+                    rationaleMessage
+                }
+            }
+            Text(stringResource(id = textToShowRes))
             Button(
                 modifier = Modifier.padding(PaddingValues(top = 10.dp)),
                 onClick = { permissionState.launchPermissionRequest() }
@@ -59,7 +63,7 @@ private fun PermissionBoxPreview(){
         modifier = Modifier,
         permissionState = DeniedMockPermissionState(true),
         rationaleMessage = R.string.contact_permission_rationale,
-        permissionDesc = R.string.contact_permission_desc
+        permanentlyDeniedMessage = R.string.contact_permission_perm_denied
     )
 }
 

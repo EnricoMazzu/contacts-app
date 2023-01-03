@@ -12,6 +12,7 @@ import com.mzzlab.sample.contactsapp.data.model.Contacts
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 
 
@@ -24,6 +25,7 @@ class ContactsProviderImpl(
         selection: String? = null,
         selectionArgs: Array<String>? = null
     ): List<Contact>? {
+        Timber.d("fetchContacts selection: $selection, selectionArgs: $selectionArgs")
         val cursor = contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
             CONTACT_PROJECTION,

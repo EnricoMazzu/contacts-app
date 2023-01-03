@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">ContactsApp</string>
     <string name="home_screen_title">Home</string>
-    <string name="contact_permission_rationale">This app require the permission to access to your contacts</string>
-    <string name="contact_permission_desc">To use this app, please grant the Contacts permission</string>
+    <string name="contact_permission_rationale">This app require the permission to access to your contacts. Without this permission, the app stop to work properly</string>
+    <string name="contact_permission_perm_denied">To use this app, please grant the Contacts permission</string>
     <string name="button_request_permission">Request permission</string>
     <string name="details_screen_title">Details</string>
     <string name="phone_number_caption">Phone Number</string>

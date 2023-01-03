@@ -9,7 +9,6 @@ import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.ui.widget.UiError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,14 +22,17 @@ class ContactDetailsViewModel @Inject constructor(
 ): ViewModel() {
 
     private lateinit var _contactId: String
+    val contactId: String by lazy { _contactId }
 
     private val _uiState = MutableStateFlow(DetailsUiState())
     val uiState = _uiState.asStateFlow()
 
 
-    fun setContactId(contactId: String){
+    fun setTargetContactId(contactId: String){
         this._contactId = contactId
     }
+
+
 
     fun reload() {
         viewModelScope.launch {
@@ -57,16 +59,27 @@ class ContactDetailsViewModel @Inject constructor(
 
     private fun processDetails(details: List<ContactDetails>?) {
         val name: String = reduceName(details)
-
-        val items: List<DetailsUiState.Item> =
+        val attributes: List<ContactAttribute> =
             details?.filter {
                 it.dataType != ContactDetails.DetailsType.Other &&
                         it.dataType != ContactDetails.DetailsType.Name
             }?.map {
                 when(it){
-                    is ContactDetails.Email -> DetailsUiState.Item(R.string.email_caption, it.email)
-                    is ContactDetails.Phone -> DetailsUiState.Item(R.string.phone_number_caption, it.phoneNumber)
-                    is ContactDetails.Website -> DetailsUiState.Item(R.string.website_caption, it.url)
+                    is ContactDetails.Phone -> ContactAttribute(
+                        id = it.id,
+                        type = AttributeType.Phone,
+                        labelRes = R.string.phone_number_caption,
+                        value = it.phoneNumber)
+                    is ContactDetails.Email -> ContactAttribute(
+                        id = it.id,
+                        type = AttributeType.Email,
+                        labelRes = R.string.email_caption,
+                        value = it.email)
+                    is ContactDetails.Website -> ContactAttribute(
+                        id = it.id,
+                        type = AttributeType.Website,
+                        labelRes = R.string.phone_number_caption,
+                        value = it.url)
                     else -> throw IllegalArgumentException("Invalid type")
                 }
             } ?: Collections.emptyList()
@@ -78,7 +91,7 @@ class ContactDetailsViewModel @Inject constructor(
                 loading = false,
                 error = null,
                 name = name,
-                values = items,
+                attributes = attributes,
                 initial = name.firstOrNull()?.toString().orEmpty()
             )
         }

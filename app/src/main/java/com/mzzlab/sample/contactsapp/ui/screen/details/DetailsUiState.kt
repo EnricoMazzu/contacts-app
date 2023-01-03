@@ -6,12 +6,20 @@ import java.util.*
 data class DetailsUiState(
     val loading: Boolean = false,
     val error: UiError? = null,
-    val initial: String = "",
+    val initial: String = "#",
     val name:String = "",
-    val values: List<Item> = Collections.emptyList()
-){
-    data class Item(
-        val key: Int,
-        val value: String? = null
-    )
+    val attributes: List<ContactAttribute> = Collections.emptyList()
+)
+
+data class ContactAttribute(
+    val id: String,
+    val type: AttributeType,
+    val labelRes: Int,
+    val value: String?
+)
+
+enum class AttributeType {
+    Phone,
+    Email,
+    Website
 }
