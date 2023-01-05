@@ -24,7 +24,9 @@ fun Cursor.asContactDetails(): ContactDetails {
     val id = getStringByName(Data._ID)
     val displayName = getStringByName(Data.DISPLAY_NAME_PRIMARY)
     val contactId = getStringByName(Data.CONTACT_ID)
-    return when(getStringByName(Data.MIMETYPE)){
+    val mimeType = getStringByName(Data.MIMETYPE)
+    Timber.d("id: $id , mimeType: $mimeType")
+    return when(mimeType){
         StructuredName.CONTENT_ITEM_TYPE -> ContactDetails.Name(
             id = id,
             contactId = contactId,

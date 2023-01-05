@@ -3,14 +3,12 @@ package com.mzzlab.sample.contactsapp.ui.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mzzlab.sample.contactsapp.common.Result
-import com.mzzlab.sample.contactsapp.common.switch
 import com.mzzlab.sample.contactsapp.data.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -36,22 +34,21 @@ class HomeViewModel @Inject constructor(
 
     private fun processResult(result: Result<List<Contact>>) {
         Timber.d("Result: $result")
-        result.switch(
-            loading = { _uiState.update { it.copy(loading = true) } },
-            success = { data ->
+        when(result) {
+            is Result.Loading -> _uiState.update { it.copy(loading = true) }
+            is Result.Success -> {
                 _uiState.update {
                     it.copy(
                         loading = false,
                         refreshing = false,
-                        contacts = data.orEmpty()
+                        contacts = result.data.orEmpty()
                     )
                 }
-            },
-            error = { err ->
-                Timber.e(err, "Error on getContacts")
-                _uiState.update { it.copy(loading = false, refreshing = false) }
             }
-        )
+            is Result.Error -> { //TODO handle error here
+                Timber.e(result.exception, "processResult error")
+            }
+        }
     }
 
     fun refreshContacts(pullToRefresh: Boolean = false) {

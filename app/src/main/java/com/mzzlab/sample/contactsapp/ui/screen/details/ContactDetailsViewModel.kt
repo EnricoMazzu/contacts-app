@@ -3,7 +3,7 @@ package com.mzzlab.sample.contactsapp.ui.screen.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mzzlab.sample.contactsapp.R
-import com.mzzlab.sample.contactsapp.common.switch
+import com.mzzlab.sample.contactsapp.common.Result
 import com.mzzlab.sample.contactsapp.data.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.ui.widget.UiError
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Collections
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,23 +27,20 @@ class ContactDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DetailsUiState())
     val uiState = _uiState.asStateFlow()
 
-
     fun setTargetContactId(contactId: String){
         this._contactId = contactId
     }
-
-
 
     fun reload() {
         viewModelScope.launch {
             _uiState.update { it.copy(loading = true) }
             val result = contactsRepository.getContactDetails(_contactId)
             Timber.d("getContactDetails of $_contactId: $result")
-            result.switch(
-                loading = { Timber.d("loading...")},
-                success = { processDetails(it) },
-                error = { showError(it) }
-            )
+            when(result){
+                is Result.Loading -> { Timber.d("loading...")}
+                is Result.Success -> { processDetails(result.data) }
+                is Result.Error ->  { showError(result.exception) }
+            }
         }
     }
 
@@ -84,8 +81,6 @@ class ContactDetailsViewModel @Inject constructor(
                 }
             } ?: Collections.emptyList()
 
-
-
         _uiState.update {
             it.copy(
                 loading = false,
@@ -95,7 +90,6 @@ class ContactDetailsViewModel @Inject constructor(
                 initial = name.firstOrNull()?.toString().orEmpty()
             )
         }
-
     }
 
     private fun reduceName(details: List<ContactDetails>?): String {

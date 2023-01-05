@@ -30,9 +30,10 @@ fun ContactsList(
     contacts: Contacts = Collections.emptyList(),
     onSelected: (Contact) -> Unit = {}
 ){
-    val mapped = remember(contacts) { contacts.groupBy { it.name.first().toString() } }
+    // Our list is grouped bu the initial letter.
+    val groupByInitial = remember(contacts) { contacts.groupBy { it.name.first().toString() } }
     LazyColumn(modifier) {
-        mapped.map { entry ->
+        groupByInitial.map { entry ->
             stickyHeader {
                 Column(
                     Modifier
@@ -51,17 +52,13 @@ fun ContactsList(
                 items = entry.value,
                 key = { c -> c.id }
             ){ contact ->
+                // remember the color derived by the hash of the input string
                 val color = rememberContactColor(contactId = contact.id)
                 ContactListItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onSelected(contact) }
-                        .padding(
-                            start = 40.dp,
-                            top = 5.dp,
-                            end = 5.dp,
-                            bottom = 5.dp
-                        ),
+                        .padding(start = 40.dp, top = 5.dp, end = 5.dp, bottom = 5.dp),
                     contact = contact,
                     color = color,
                     initial = entry.key
@@ -85,8 +82,6 @@ fun ContactListPreview(){
     }
 }
 
-
-
 @Composable
 fun ContactListItem(
     modifier: Modifier = Modifier,
@@ -108,10 +103,7 @@ fun ContactListItem(
             text = contact.name
         )
     }
-
 }
-
-
 
 @Composable
 @Preview(showBackground = true, name = "ContactListItemPreview")

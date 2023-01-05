@@ -39,8 +39,11 @@ class ContactsProviderImpl(
     }
 
 
-    override suspend fun getContacts(): Contacts = withContext(dispatcher){
-        fetchContacts() ?: Collections.emptyList()
+    override suspend fun getContacts(
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Contacts = withContext(dispatcher){
+        fetchContacts(selection, selectionArgs) ?: Collections.emptyList()
     }
 
     override suspend fun getContactDetails(contactId: String): List<ContactDetails> = withContext(dispatcher) {
@@ -51,17 +54,19 @@ class ContactsProviderImpl(
         val cursor: Cursor? = contentResolver.query(
             ContactsContract.Data.CONTENT_URI,
             CONTACT_DATA_PROJECTION,
-            ContactsContract.Data.CONTACT_ID + "=?",
+            "${ContactsContract.Data.CONTACT_ID}=?",
             arrayOf(java.lang.String.valueOf(contactId)),
             null
         )
-        val result: List<ContactDetails>? = cursor?.map { it.asContactDetails()}
+        val result: List<ContactDetails>? = cursor?.map { it.asContactDetails() }
         cursor?.close()
         return result
     }
 
-
     companion object {
+        private const val CONTACT_SORT = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
+
+        @JvmStatic
         private val CONTACT_PROJECTION = arrayOf(
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
@@ -70,15 +75,13 @@ class ContactsProviderImpl(
             ContactsContract.Contacts.LOOKUP_KEY,
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
         )
-        private const val CONTACT_SORT = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
 
+        @JvmStatic
         private val CONTACT_DATA_PROJECTION = arrayOf(
             ContactsContract.Data._ID,
             ContactsContract.Data.DISPLAY_NAME_PRIMARY,
             ContactsContract.Data.CONTACT_ID,
             ContactsContract.Data.MIMETYPE,
-            //Email.DATA,
-            //Phone.NUMBER,
             ContactsContract.Data.DATA1,
             ContactsContract.Data.DATA2,
             ContactsContract.Data.DATA3,

@@ -30,16 +30,3 @@ internal inline fun <T> getResult(block: () -> T): Result<T> = try {
     }
     Result.Error(ex)
 }
-
-internal inline fun <T> Result<T>.switch(
-    success : (T?) -> Unit = {},
-    error : (ex: Throwable?) -> Unit = {},
-    loading: () -> Unit = {}
-){
-    when(this){
-        is Result.Success -> success(this.data)
-        is Result.Error -> error(this.exception)
-        is Result.Loading -> loading()
-    }
-}
-

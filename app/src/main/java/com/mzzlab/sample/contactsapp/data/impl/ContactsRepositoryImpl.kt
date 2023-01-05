@@ -8,10 +8,8 @@ import com.mzzlab.sample.contactsapp.data.ContactsProvider
 import com.mzzlab.sample.contactsapp.data.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.data.model.Contacts
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 
 class ContactsRepositoryImpl (
     private val contactsProvider: ContactsProvider,
