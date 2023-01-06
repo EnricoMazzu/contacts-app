@@ -1,4 +1,4 @@
-package com.mzzlab.sample.contactsapp.data
+package com.mzzlab.sample.contactsapp.data.repo
 
 import com.mzzlab.sample.contactsapp.common.AppFlow
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails

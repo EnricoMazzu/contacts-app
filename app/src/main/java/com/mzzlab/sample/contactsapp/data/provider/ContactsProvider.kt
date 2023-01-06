@@ -1,4 +1,4 @@
-package com.mzzlab.sample.contactsapp.data
+package com.mzzlab.sample.contactsapp.data.provider
 
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.data.model.Contacts
@@ -11,13 +11,8 @@ interface ContactsProvider {
     /**
      * Fetch all contacts
      *
-     * @param selection the where clause
-     * @param selectionArgs the where clause arguments
      */
-    suspend fun getContacts(
-        selection: String? = null,
-        selectionArgs: Array<String>? = null
-    ): Contacts
+    suspend fun getContacts(): Contacts
 
     /**
      * Read the details of a contact

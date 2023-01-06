@@ -3,7 +3,7 @@ package com.mzzlab.sample.contactsapp.ui.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mzzlab.sample.contactsapp.common.Result
-import com.mzzlab.sample.contactsapp.data.ContactsRepository
+import com.mzzlab.sample.contactsapp.data.repo.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

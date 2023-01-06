@@ -4,10 +4,10 @@ import android.database.Cursor
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.*
 import android.provider.ContactsContract.Data
-import com.mzzlab.sample.contactsapp.data.impl.getIntByName
-import com.mzzlab.sample.contactsapp.data.impl.getStringByName
-import com.mzzlab.sample.contactsapp.data.impl.optIntByName
-import com.mzzlab.sample.contactsapp.data.impl.optStringByName
+import com.mzzlab.sample.contactsapp.data.getIntByName
+import com.mzzlab.sample.contactsapp.data.getStringByName
+import com.mzzlab.sample.contactsapp.data.optIntByName
+import com.mzzlab.sample.contactsapp.data.optStringByName
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import timber.log.Timber
@@ -52,14 +52,7 @@ fun Cursor.asContactDetails(): ContactDetails {
             displayName = displayName,
             url = optStringByName(Website.URL)
         )
-        else -> ContactDetails.Other(
-            id = id,
-            contactId = contactId,
-            displayName = displayName,
-            data1 = optStringByName(Data.DATA1),
-            data2 = optStringByName(Data.DATA2),
-            data3 = optStringByName(Data.DATA3)
-        )
+        else -> throw IllegalArgumentException("Unsupported types")
     }
 
 }

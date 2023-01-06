@@ -10,8 +10,7 @@ sealed class ContactDetails(
         Name,
         Phone,
         Email,
-        WebSite,
-        Other
+        WebSite
     }
 
     class Name(
@@ -59,14 +58,6 @@ sealed class ContactDetails(
         }
     }
 
-    class Other(
-        id: String,
-        contactId: String,
-        displayName: String? = null,
-        val data1: String? = null,
-        val data2: String? = null,
-        val data3: String? = null
-    ): ContactDetails(id, contactId, DetailsType.Other, displayName)
 
     override fun toString(): String {
         return "ContactDetails(id='$id', contactId='$contactId', type=$dataType, displayName=$displayName)"

@@ -1,4 +1,4 @@
-package com.mzzlab.sample.contactsapp.data.impl
+package com.mzzlab.sample.contactsapp.data
 
 import android.database.Cursor
 import androidx.core.database.getIntOrNull

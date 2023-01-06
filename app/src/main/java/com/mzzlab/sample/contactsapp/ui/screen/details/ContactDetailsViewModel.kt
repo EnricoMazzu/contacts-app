@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mzzlab.sample.contactsapp.R
 import com.mzzlab.sample.contactsapp.common.Result
-import com.mzzlab.sample.contactsapp.data.ContactsRepository
+import com.mzzlab.sample.contactsapp.data.repo.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.ui.widget.UiError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,8 +58,7 @@ class ContactDetailsViewModel @Inject constructor(
         val name: String = reduceName(details)
         val attributes: List<ContactAttribute> =
             details?.filter {
-                it.dataType != ContactDetails.DetailsType.Other &&
-                        it.dataType != ContactDetails.DetailsType.Name
+                it.dataType != ContactDetails.DetailsType.Name
             }?.map {
                 when(it){
                     is ContactDetails.Phone -> ContactAttribute(

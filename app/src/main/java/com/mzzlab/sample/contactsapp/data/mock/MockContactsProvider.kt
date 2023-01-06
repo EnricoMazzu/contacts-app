@@ -3,7 +3,7 @@ package com.mzzlab.sample.contactsapp.data.mock
 import com.mzzlab.sample.contactsapp.common.AppFlow
 import com.mzzlab.sample.contactsapp.common.MutableAppFlow
 import com.mzzlab.sample.contactsapp.common.Result
-import com.mzzlab.sample.contactsapp.data.ContactsRepository
+import com.mzzlab.sample.contactsapp.data.repo.ContactsRepository
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.data.model.ContactDetails
 import com.mzzlab.sample.contactsapp.data.model.Contacts

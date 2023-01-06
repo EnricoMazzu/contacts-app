@@ -2,10 +2,10 @@ package com.mzzlab.sample.contactsapp.di
 
 
 import android.content.Context
-import com.mzzlab.sample.contactsapp.data.ContactsProvider
-import com.mzzlab.sample.contactsapp.data.ContactsRepository
-import com.mzzlab.sample.contactsapp.data.impl.ContactsProviderImpl
-import com.mzzlab.sample.contactsapp.data.impl.ContactsRepositoryImpl
+import com.mzzlab.sample.contactsapp.data.provider.ContactsProvider
+import com.mzzlab.sample.contactsapp.data.repo.ContactsRepository
+import com.mzzlab.sample.contactsapp.data.provider.impl.ContactsProviderImpl
+import com.mzzlab.sample.contactsapp.data.repo.impl.ContactsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
