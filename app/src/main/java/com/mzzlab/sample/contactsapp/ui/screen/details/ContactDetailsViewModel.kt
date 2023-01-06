@@ -63,19 +63,25 @@ class ContactDetailsViewModel @Inject constructor(
                 when(it){
                     is ContactDetails.Phone -> ContactAttribute(
                         id = it.id,
-                        type = AttributeType.Phone,
+                        valueType = ValueType.Phone,
                         labelRes = R.string.phone_number_caption,
-                        value = it.phoneNumber)
+                        value = it.phoneNumber,
+                        accountType = it.accountType
+                    )
                     is ContactDetails.Email -> ContactAttribute(
                         id = it.id,
-                        type = AttributeType.Email,
+                        valueType = ValueType.Email,
                         labelRes = R.string.email_caption,
-                        value = it.email)
+                        value = it.email,
+                        accountType = it.accountType
+                    )
                     is ContactDetails.Website -> ContactAttribute(
                         id = it.id,
-                        type = AttributeType.Website,
+                        valueType = ValueType.Website,
                         labelRes = R.string.phone_number_caption,
-                        value = it.url)
+                        value = it.url,
+                        accountType = it.accountType
+                    )
                     else -> throw IllegalArgumentException("Invalid type")
                 }
             } ?: Collections.emptyList()

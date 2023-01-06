@@ -24,17 +24,20 @@ fun Cursor.asContactDetails(): ContactDetails {
     val id = getStringByName(Data._ID)
     val displayName = getStringByName(Data.DISPLAY_NAME_PRIMARY)
     val contactId = getStringByName(Data.CONTACT_ID)
+    val accountType = getStringByName(Data.ACCOUNT_TYPE_AND_DATA_SET)
     val mimeType = getStringByName(Data.MIMETYPE)
-    Timber.d("id: $id , mimeType: $mimeType")
+    Timber.d("id: $id , mimeType: $mimeType, accountType: $accountType")
     return when(mimeType){
         StructuredName.CONTENT_ITEM_TYPE -> ContactDetails.Name(
             id = id,
             contactId = contactId,
+            accountType = accountType,
             displayName = displayName
         )
         Phone.CONTENT_ITEM_TYPE -> ContactDetails.Phone(
             id = id,
             contactId = contactId,
+            accountType = accountType,
             displayName = displayName,
             phoneType = Phone.getTypeLabelResource(optIntByName(Phone.TYPE)),
             phoneNumber = optStringByName(Phone.NUMBER),
@@ -43,12 +46,14 @@ fun Cursor.asContactDetails(): ContactDetails {
         Email.CONTENT_ITEM_TYPE -> ContactDetails.Email(
             id = id,
             contactId = contactId,
+            accountType = accountType,
             displayName = displayName,
             email = optStringByName(Email.ADDRESS)
         )
         Website.CONTENT_ITEM_TYPE -> ContactDetails.Website(
             id = id,
             contactId = contactId,
+            accountType = accountType,
             displayName = displayName,
             url = optStringByName(Website.URL)
         )

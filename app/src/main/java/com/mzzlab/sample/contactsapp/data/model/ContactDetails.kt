@@ -1,11 +1,12 @@
 package com.mzzlab.sample.contactsapp.data.model
 
-sealed class ContactDetails(
-    val id: String,
-    val contactId: String,
-    val dataType: DetailsType,
-    val displayName: String? = null
-) {
+sealed interface ContactDetails {
+    val id: String
+    val contactId: String
+    val accountType: String
+    val dataType: DetailsType
+    val displayName: String?
+
     enum class DetailsType {
         Name,
         Phone,
@@ -13,58 +14,40 @@ sealed class ContactDetails(
         WebSite
     }
 
-    class Name(
-        id: String,
-        contactId: String,
-        displayName: String? = null,
-    ): ContactDetails(id, contactId, DetailsType.Name, displayName){
-        override fun toString(): String {
-            return "Name() ${super.toString()}"
-        }
-    }
+    data class Name(
+        override val id: String,
+        override val contactId: String,
+        override val accountType: String,
+        override val displayName: String? = null,
+        override val dataType: DetailsType = DetailsType.Name
+    ): ContactDetails
 
-    class Phone(
-        id: String,
-        contactId: String,
-        displayName: String? = null,
+    data class Phone(
+        override val id: String,
+        override val contactId: String,
+        override val accountType: String,
+        override val displayName: String? = null,
+        override val dataType: DetailsType = DetailsType.Phone,
         val phoneType: Int = -1,
         val phoneNumber: String? = null,
         val phoneLabel: String? = null,
-    ): ContactDetails(id, contactId, DetailsType.Phone, displayName) {
-        override fun toString(): String {
-            return "Phone(phoneType=$phoneType, phoneNumber=$phoneNumber, phoneLabel=$phoneLabel) ${super.toString()}"
-        }
-    }
+    ): ContactDetails
 
-    class Email(
-        id: String,
-        contactId: String,
-        displayName: String? = null,
+    data class Email(
+        override val id: String,
+        override val contactId: String,
+        override val accountType: String,
+        override val displayName: String? = null,
+        override val dataType: DetailsType = DetailsType.Email,
         val email: String? = null
-    ): ContactDetails(id, contactId, DetailsType.Email, displayName){
-        override fun toString(): String {
-            return "Email(email=$email) ${super.toString()}"
-        }
-    }
+    ): ContactDetails
 
-    class Website(
-        id: String,
-        contactId: String,
-        displayName: String? = null,
+    data class Website(
+        override val id: String,
+        override val contactId: String,
+        override val accountType: String,
+        override val displayName: String? = null,
+        override val dataType: DetailsType = DetailsType.WebSite,
         val url: String? = null
-    ): ContactDetails(id, contactId, DetailsType.WebSite, displayName){
-        override fun toString(): String {
-            return "Website(url=$url) ${super.toString()}"
-        }
-    }
-
-
-    override fun toString(): String {
-        return "ContactDetails(id='$id', contactId='$contactId', type=$dataType, displayName=$displayName)"
-    }
+    ): ContactDetails
 }
-
-
-
-
-

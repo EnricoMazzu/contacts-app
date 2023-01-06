@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -91,7 +92,8 @@ private fun ContactDetailsList(
                     .fillMaxWidth()
                     .padding(10.dp),
                 label = stringResource(id = item.labelRes),
-                value = item.value.orEmpty()
+                value = item.value.orEmpty(),
+                accountType = item.accountType
             )
             Line()
             Spacer(
@@ -138,6 +140,7 @@ fun LabelValuePair(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
+    accountType: String ? = null
 ) {
     Column(modifier = modifier
     ) {
@@ -146,6 +149,12 @@ fun LabelValuePair(
             style = MaterialTheme.typography.h5
         )
         Text(text = value)
+        Text(
+            modifier = Modifier
+                .padding(top = 5.dp),
+            text = accountType.orEmpty(),
+            style = MaterialTheme.typography.overline
+                .copy(fontStyle = FontStyle.Italic))
     }
 }
 
@@ -164,21 +173,24 @@ fun ContactDetailsContentPreview() {
                     attributes = listOf(
                         ContactAttribute(
                             id = "1",
-                            type = AttributeType.Phone,
+                            valueType = ValueType.Phone,
                             labelRes =R.string.phone_number_caption,
-                            value = "+39 5645324"
+                            value = "+39 5645324",
+                            accountType = "com.google"
                         ),
                         ContactAttribute(
                             id = "2",
-                            type = AttributeType.Email,
+                            valueType = ValueType.Email,
                             labelRes =R.string.email_caption,
-                            value = "+39 5645324"
+                            value = "+39 5645324",
+                            accountType = "com.google"
                         ),
                         ContactAttribute(
                             id = "3",
-                            type = AttributeType.Website,
+                            valueType = ValueType.Website,
                             labelRes =R.string.website_caption,
-                            value = "https://www.google.it"
+                            value = "https://www.google.it",
+                            accountType = "com.google"
                         ),
                     )
                 )

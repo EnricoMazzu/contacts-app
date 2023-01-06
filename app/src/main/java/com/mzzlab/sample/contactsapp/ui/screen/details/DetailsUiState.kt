@@ -13,12 +13,13 @@ data class DetailsUiState(
 
 data class ContactAttribute(
     val id: String,
-    val type: AttributeType,
+    val valueType: ValueType,
     val labelRes: Int,
-    val value: String?
+    val value: String?,
+    val accountType: String? = null,
 )
 
-enum class AttributeType {
+enum class ValueType {
     Phone,
     Email,
     Website

@@ -35,7 +35,7 @@ class MockContactsRepository(
         val contact: Contact? = MockContacts.contacts.find { c -> contactId == c.id }
         val data = contact?.let {
             listOf<ContactDetails>(
-                ContactDetails.Name("1", contactId = contact.id, displayName = contact.name)
+                ContactDetails.Name("1", contactId = contact.id, accountType = "com.google" , displayName = contact.name)
             )
         } ?: Collections.emptyList()
         Result.Success(data)
