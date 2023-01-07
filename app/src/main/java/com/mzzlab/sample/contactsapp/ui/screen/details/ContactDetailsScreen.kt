@@ -201,9 +201,7 @@ fun ContactDetailsContentPreview() {
 }
 
 
-fun NavGraphBuilder.addContactDetailsScreen(
-    navController: NavHostController
-) {
+fun NavGraphBuilder.addContactDetailsScreen() {
     composable(
         ContactDetailsRoute.route,
         arguments = listOf(

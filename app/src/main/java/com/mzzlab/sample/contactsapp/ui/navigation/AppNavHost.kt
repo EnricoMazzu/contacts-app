@@ -19,6 +19,6 @@ fun AppNavHost(
         startDestination = startDestination,
     ){
         addHomeRoute(navController)
-        addContactDetailsScreen(navController)
+        addContactDetailsScreen()
     }
 }

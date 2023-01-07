@@ -9,8 +9,7 @@ import com.mzzlab.sample.contactsapp.data.model.Contacts
 interface ContactsProvider {
 
     /**
-     * Fetch all contacts
-     *
+     * Fetch all the contacts
      */
     suspend fun getContacts(): Contacts
 

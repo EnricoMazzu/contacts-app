@@ -23,14 +23,6 @@ class ContactsProviderImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ContactsProvider {
 
-    override suspend fun getContacts(): Contacts = withContext(dispatcher){
-        fetchContacts() ?: Collections.emptyList()
-    }
-
-    override suspend fun getContactDetails(contactId: String): List<ContactDetails> = withContext(dispatcher) {
-        fetchContactData(contactId) ?: Collections.emptyList()
-    }
-
     private fun query(
         uri: Uri,
         projection: Array<String>,
@@ -41,10 +33,14 @@ class ContactsProviderImpl(
         return contentResolver.query(uri, projection, selection, selectionArgs, sort)
     }
 
+    override suspend fun getContacts(): Contacts = withContext(dispatcher){
+        fetchContacts() ?: Collections.emptyList()
+    }
+
     private fun fetchContacts(): List<Contact>? {
         val cursor = query(
             uri = ContactsContract.Contacts.CONTENT_URI,
-            projection = CONTACT_PROJECTION,
+            projection = CONTACTS_PROJECTION,
             sort = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
         )
         val result: List<Contact>? = cursor.map { it.asContact() }
@@ -52,11 +48,16 @@ class ContactsProviderImpl(
         return result
     }
 
+    override suspend fun getContactDetails(contactId: String): List<ContactDetails> = withContext(dispatcher) {
+        fetchContactData(contactId) ?: Collections.emptyList()
+    }
+
     private fun fetchContactData(contactId: String): List<ContactDetails>? {
         val cursor: Cursor? = query(
             uri = ContactsContract.Data.CONTENT_URI,
             projection = CONTACT_DATA_PROJECTION,
-            selection = CONTACT_DETAILS_SELECT, // contact_id = ? AND mimetype IN (...)
+            //selection: contact_id = ? AND mimetype IN (?,?,?,?)
+            selection = CONTACT_DETAILS_SELECT,
             selectionArgs = arrayOf(
                 contactId,
                 StructuredName.CONTENT_ITEM_TYPE,
@@ -70,44 +71,13 @@ class ContactsProviderImpl(
         return result
     }
 
-    /*private fun tryRawData(contactId: String) {
-        val cursor: Cursor? = query(
-            uri = ContactsContract.RawContacts.CONTENT_URI,
-            projection = arrayOf(
-                ContactsContract.RawContacts._ID,
-                ContactsContract.RawContacts.CONTACT_ID,
-                ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
-                ContactsContract.RawContacts.RAW_CONTACT_IS_USER_PROFILE,
-                ContactsContract.RawContacts.ACCOUNT_NAME,
-                ContactsContract.RawContacts.ACCOUNT_TYPE,
-                ContactsContract.RawContacts.ACCOUNT_TYPE_AND_DATA_SET,
-            ),
-            selection = "${ContactsContract.RawContacts.CONTACT_ID}=?", // contact_id = ? AND mimetype IN (...)
-            selectionArgs = arrayOf(
-                contactId,
-            )
-        )
-        Timber.d(">>> Count: ${cursor?.count ?: -1}")
-        cursor.map {
-            it.columnNames.map { col ->
-                val value = it.optStringByName(col)
-                Pair(col, value)
-            }
-        }?.forEach {
-            Timber.d(">>> Pair: $it")
-        }
-    }*/
-
     companion object {
 
         @JvmStatic
-        private val CONTACT_PROJECTION = arrayOf(
+        private val CONTACTS_PROJECTION = arrayOf(
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.Contacts.HAS_PHONE_NUMBER,
-            ContactsContract.Contacts.CONTACT_LAST_UPDATED_TIMESTAMP,
-            ContactsContract.Contacts.LOOKUP_KEY,
-            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
         )
 
         @JvmStatic
@@ -115,7 +85,6 @@ class ContactsProviderImpl(
             ContactsContract.Data._ID,
             ContactsContract.Data.DISPLAY_NAME_PRIMARY,
             ContactsContract.Data.CONTACT_ID,
-            ContactsContract.Data.RAW_CONTACT_ID,
             ContactsContract.Data.ACCOUNT_TYPE_AND_DATA_SET,
             ContactsContract.Data.MIMETYPE,
             ContactsContract.Data.DATA1,
