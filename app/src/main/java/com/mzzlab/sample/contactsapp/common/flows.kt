@@ -1,7 +1,7 @@
 package com.mzzlab.sample.contactsapp.common
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-typealias AppFlow<T> = Flow<Result<T>>
+typealias AppFlow<T> = StateFlow<Result<T>>
 typealias MutableAppFlow<T> = MutableStateFlow<Result<T>>

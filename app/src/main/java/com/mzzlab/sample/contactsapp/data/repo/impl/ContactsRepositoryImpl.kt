@@ -11,15 +11,14 @@ import com.mzzlab.sample.contactsapp.data.model.Contacts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class ContactsRepositoryImpl (
+class ContactsRepositoryImpl(
     private val contactsProvider: ContactsProvider,
-): ContactsRepository {
+) : ContactsRepository {
 
-    private val _contactsFlow: MutableAppFlow<Contacts> = MutableStateFlow(Result.Loading(true))
+    private val _contactsFlow: MutableAppFlow<Contacts> =
+        MutableStateFlow(Result.Loading(initial = true))
 
-    override val contacts: AppFlow<Contacts> by lazy {
-        _contactsFlow.asStateFlow()
-    }
+    override val contacts: AppFlow<Contacts> by lazy { _contactsFlow.asStateFlow() }
 
     override suspend fun reloadContacts() {
         _contactsFlow.value = Result.Loading()
@@ -29,7 +28,9 @@ class ContactsRepositoryImpl (
         _contactsFlow.value = result
     }
 
-    override suspend fun getContactDetails(contactId: String): Result<List<ContactDetails>> {
+    override suspend fun getContactDetails(
+        contactId: String
+    ): Result<List<ContactDetails>> {
         return getResult {
             contactsProvider.getContactDetails(contactId)
         }
