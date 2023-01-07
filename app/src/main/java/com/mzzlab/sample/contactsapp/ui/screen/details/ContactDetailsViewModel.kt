@@ -31,7 +31,7 @@ class ContactDetailsViewModel @Inject constructor(
         this._contactId = contactId
     }
 
-    fun reload() {
+    fun loadDetails() {
         viewModelScope.launch {
             _uiState.update { it.copy(loading = true) }
             val result = contactsRepository.getContactDetails(_contactId)

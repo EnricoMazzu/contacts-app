@@ -26,6 +26,8 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        // N.B: you should use the stateIn and combine your input flows here
+        // otherwise the flow can emit values also when there aren't subscribers
         viewModelScope.launch {
             contactsRepository
                 .contacts
@@ -70,5 +72,4 @@ class HomeViewModel @Inject constructor(
             contactsRepository.reloadContacts()
         }
     }
-
 }

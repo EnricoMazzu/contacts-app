@@ -34,7 +34,7 @@ import com.mzzlab.sample.contactsapp.ui.widget.rememberContactColor
 @Composable
 fun ContactDetailsScreen(viewModel: ContactDetailsViewModel) {
     LaunchedEffect(Unit) {
-        viewModel.reload()
+        viewModel.loadDetails()
     }
     val uiState: DetailsUiState by viewModel.uiState.collectAsStateWithLifecycle()
     ContactDetailsContent(details = uiState, contactId = viewModel.contactId)
