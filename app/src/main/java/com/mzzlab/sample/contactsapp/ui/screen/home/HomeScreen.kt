@@ -28,6 +28,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.mzzlab.sample.contactsapp.R
+import com.mzzlab.sample.contactsapp.common.isPermanentlyDenied
 import com.mzzlab.sample.contactsapp.data.model.Contact
 import com.mzzlab.sample.contactsapp.ui.navigation.ContactDetailsRoute
 import com.mzzlab.sample.contactsapp.ui.navigation.HomeRoute
@@ -46,8 +47,7 @@ fun HomeScreen(
 ) {
     // Our ui state (that comes from our viewModel)
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    Timber.d("new State: $state")
-    // The permission state holder
+    // The permission state holder cause recomposition in case of permission state change
     val permissionState = rememberPermissionState(Manifest.permission.READ_CONTACTS)
     // The pull to refresh state holder
     val pullRefreshState = rememberPullRefreshState(state.refreshing, {
@@ -58,10 +58,11 @@ fun HomeScreen(
         PermissionBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp),
-            permissionState = permissionState,
+                .padding(10.dp),
+            isPermanentlyDenied = permissionState.status.isPermanentlyDenied(),
             rationaleMessage = R.string.contact_permission_rationale,
-            permanentlyDeniedMessage = R.string.contact_permission_perm_denied
+            permanentlyDeniedMessage = R.string.contact_permission_perm_denied,
+            onPermissionRequest = { permissionState.launchPermissionRequest() }
         )
     } else {
         LaunchedEffect(permissionState){

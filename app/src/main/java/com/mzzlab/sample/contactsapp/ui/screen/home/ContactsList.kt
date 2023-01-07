@@ -27,13 +27,11 @@ import java.util.*
 @Composable
 fun ContactsList(
     modifier: Modifier = Modifier,
-    contacts: Contacts = Collections.emptyList(),
+    contacts: Map<String, List<Contact>> = Collections.emptyMap(),
     onSelected: (Contact) -> Unit = {}
 ){
-    // Our list is grouped bu the initial letter.
-    val groupByInitial = remember(contacts) { contacts.groupBy { it.name.first().toString() } }
     LazyColumn(modifier) {
-        groupByInitial.map { entry ->
+        contacts.map { entry ->
             stickyHeader {
                 Column(
                     Modifier
@@ -75,7 +73,7 @@ fun ContactListPreview(){
         Surface(modifier = Modifier.fillMaxSize()) {
             ContactsList(
                 modifier = Modifier.fillMaxSize(),
-                contacts = MockContacts.contacts
+                contacts = MockContacts.contacts.groupBy { it.name.first().toString() }
             )
         }
 

@@ -6,5 +6,7 @@ import java.util.Collections
 data class HomeUiState(
     val loading: Boolean = false,
     val refreshing: Boolean = false,
-    val contacts: List<Contact> = Collections.emptyList()
+    val contacts: GroupedContacts = Collections.emptyMap()
 )
+
+typealias GroupedContacts = Map<String, List<Contact>>

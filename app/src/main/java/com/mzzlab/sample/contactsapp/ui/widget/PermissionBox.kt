@@ -1,10 +1,7 @@
 package com.mzzlab.sample.contactsapp.ui.widget
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -19,14 +16,13 @@ import com.google.accompanist.permissions.*
 import com.mzzlab.sample.contactsapp.R
 import com.mzzlab.sample.contactsapp.common.isPermanentlyDenied
 
-
 @Composable
-@OptIn(ExperimentalPermissionsApi::class)
 fun PermissionBox(
     modifier: Modifier = Modifier,
-    permissionState: PermissionState,
     @StringRes rationaleMessage: Int,
-    @StringRes permanentlyDeniedMessage: Int
+    @StringRes permanentlyDeniedMessage: Int,
+    isPermanentlyDenied: Boolean = false,
+    onPermissionRequest: () -> Unit = {}
 ) {
     Card(
         modifier = modifier,
@@ -37,17 +33,15 @@ fun PermissionBox(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            @StringRes val textToShowRes: Int = remember(permissionState) {
-                if(permissionState.status.isPermanentlyDenied()){
-                    permanentlyDeniedMessage
-                }else{
-                    rationaleMessage
-                }
+            @StringRes val textToShowRes = if(isPermanentlyDenied){
+                permanentlyDeniedMessage
+            }else{
+                rationaleMessage
             }
             Text(stringResource(id = textToShowRes))
             Button(
                 modifier = Modifier.padding(PaddingValues(top = 10.dp)),
-                onClick = { permissionState.launchPermissionRequest() }
+                onClick = { onPermissionRequest() }
             ) {
                 Text(stringResource(id = R.string.button_request_permission))
             }
@@ -55,40 +49,14 @@ fun PermissionBox(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Preview(showBackground = false, name = "PermissionBoxPreview")
 @Composable
 private fun PermissionBoxPreview(){
     PermissionBox(
-        modifier = Modifier,
-        permissionState = DeniedMockPermissionState(true),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         rationaleMessage = R.string.contact_permission_rationale,
         permanentlyDeniedMessage = R.string.contact_permission_perm_denied
     )
-}
-
-
-
-@OptIn(ExperimentalPermissionsApi::class)
-class OkMockPermissionState: PermissionState {
-    override val permission: String
-        get() = "MyPermission"
-    override val status: PermissionStatus
-        get() = PermissionStatus.Granted
-
-    override fun launchPermissionRequest() {
-        //NOOP
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-class DeniedMockPermissionState(private val shouldShowRationale: Boolean): PermissionState {
-    override val permission: String
-        get() = "MyPermission"
-    override val status: PermissionStatus
-        get() = PermissionStatus.Denied(shouldShowRationale)
-
-    override fun launchPermissionRequest() {
-        //NOOP
-    }
 }
